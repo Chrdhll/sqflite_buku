@@ -35,9 +35,9 @@ class DatabaseHelper {
     return await db.insert('tb_buku', buku.toMap());
   }
 
-  Future<List<Map<String, dynamic>>> quaryAllBuku() async {
+  Future<List<Map<String, dynamic>>> queryAllBuku() async {
     Database db = await instance.db;
-    return await db.query('tb_buku');
+    return await db.query('tb_buku', orderBy: 'id DESC');
   }
 
   Future<int> updateBuku(ModelBuku buku) async {
@@ -50,7 +50,16 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> deleteUser(int id) async {
+  Future<ModelBuku?> getBukuById(int id) async {
+    final db = await instance.db;
+    final result = await db.query('tb_buku', where: 'id = ?', whereArgs: [id]);
+    if (result.isNotEmpty) {
+      return ModelBuku.fromMap(result.first);
+    }
+    return null;
+  }
+
+  Future<int> deleteBuku(int id) async {
     Database db = await instance.db;
     return await db.delete('tb_buku', where: 'id = ?', whereArgs: [id]);
   }
